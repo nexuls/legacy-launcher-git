@@ -80,6 +80,7 @@ makepkg -si
 | `/usr/bin/legacy-launcher` | Wrapper script (`java -jar …`) |
 | `/usr/share/applications/legacy-launcher.desktop` | Desktop menu entry |
 | `/usr/share/icons/hicolor/scalable/apps/legacy-launcher.svg` | Scalable icon |
+| `/usr/share/icons/hicolor/256x256/apps/legacy-launcher.png` | Raster icon (tray/dock size) |
 | `/usr/share/icons/hicolor/512x512/apps/legacy-launcher.png` | Raster icon |
 
 ## Usage
