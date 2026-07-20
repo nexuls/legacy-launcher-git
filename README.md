@@ -41,7 +41,9 @@ sudo pacman -S --needed base-devel jre17-openjdk
 ├── PKGBUILD
 ├── LegacyLauncher.jar
 ├── legacy-launcher.svg
+├── legacy-launcher_256.png
 ├── legacy-launcher_512.png
+├── LICENSE
 └── README.md
 ```
 
@@ -101,6 +103,6 @@ sudo pacman -R legacy-launcher
 
 ## License
 
-The packaging files in this repository are provided under the MIT License (or your preferred license).
+The packaging files in this repository (PKGBUILD, wrapper script, desktop entry, README, and related metadata) are provided under the [MIT License](LICENSE).
 
-The **Legacy Launcher** application, its name, logo, and JAR file are the property of their respective authors and are distributed under their own license and terms.
+The **Legacy Launcher** application, its name, logo, and JAR file are the property of their respective authors and are distributed under their own license and terms. See [llaun.ch](https://llaun.ch/) for details.
