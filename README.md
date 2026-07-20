@@ -14,7 +14,7 @@
 
 ---
 
-This package installs the official Legacy Launcher JAR under `/opt`, creates a launcher script, installs a desktop entry, and registers application icons so it integrates cleanly with your desktop environment.
+This package downloads the official Legacy Launcher JAR from upstream at build time, verifies it against a pinned checksum, installs it under `/opt`, creates a launcher script, installs a desktop entry, and registers application icons so it integrates cleanly with your desktop environment.
 
 > [!NOTE]
 > This repository is **not affiliated with the Legacy Launcher project**. It simply packages the official launcher for Arch Linux. All rights to the launcher itself belong to its original authors.
@@ -36,6 +36,7 @@ This package installs the official Legacy Launcher JAR under `/opt`, creates a l
 ## Features
 
 - ✅ Native Arch package built with `makepkg`
+- 🔒 JAR fetched from upstream at build time and verified against a pinned SHA-256
 - 🖥️ Desktop menu integration via a `.desktop` entry
 - 🎨 Scalable SVG and high-resolution PNG application icons
 - ⌨️ Launcher available as the `legacy-launcher` command
@@ -100,18 +101,54 @@ legacy-launcher --help
 
 ## Updating Legacy Launcher
 
-When a new version of Legacy Launcher is released:
+The `PKGBUILD` fetches the JAR from `https://llaun.ch/jar` — a rolling "latest" endpoint with
+no version in the path — and pins its SHA-256. When upstream publishes a new build, that
+checksum stops matching and `makepkg` fails at the validation step:
 
-1. Download the latest **LegacyLauncher.jar** from the [official website](https://llaun.ch/).
-2. Replace the existing `LegacyLauncher.jar` in this repository with the new one.
-3. Bump `pkgver` in the `PKGBUILD` if you want the package version to reflect the update.
-4. Rebuild and reinstall:
+```
+==> Validating source files with sha256sums...
+    LegacyLauncher.jar ... FAILED
+```
 
-   ```bash
-   makepkg -si
-   ```
+**This is the intended signal that an update is available, not a bug.** To take the update:
 
-The new launcher overwrites the previous installation.
+```bash
+updpkgsums     # refresh sha256sums= from upstream
+makepkg -si    # rebuild and install
+```
+
+Then bump `pkgver` to match the new release. The authoritative version is inside the JAR
+itself, not on the website:
+
+```bash
+unzip -p LegacyLauncher.jar META-INF/bootstrap-meta.json
+# {"version":"1.40.3+legacy","shortBrand":"legacy","brand":"Stable"}
+```
+
+> [!WARNING]
+> Do not take the version from upstream's `.deb` control file — it still reports `1.0` from a
+> 2024 build and is stale.
+
+> [!CAUTION]
+> Never commit `sha256sums=('SKIP')` for the JAR. The download endpoint sits behind
+> Cloudflare, and every other artifact path on that host answers unauthenticated requests
+> with an HTTP 403 challenge page. Without the pin, `makepkg` would happily save that HTML
+> as `LegacyLauncher.jar` and report a successful build. The pin turns that into a loud
+> checksum failure instead.
+
+### What the checksum does and does not cover
+
+The file this package installs is a **bootstrap**, not the launcher itself
+(`Start-Class: net.legacylauncher.bootstrap.BootstrapStarter`). On first run it downloads the
+actual launcher into your home directory and self-updates there, outside of `pacman`.
+
+So the pinned checksum verifies *the downloader* that `pacman` tracks; the code that arrives
+afterwards is not covered by it. This is inherent to how upstream ships the launcher and no
+change to this `PKGBUILD` can alter it. Worth knowing rather than assuming otherwise.
+
+Upstream also publishes no GPG signature, no detached `.sig`/`.asc`, and no checksums file,
+and the JAR is not JAR-signed — so the SHA-256 pin is the only integrity mechanism available
+here.
 
 ## Uninstall
 
@@ -121,20 +158,22 @@ Remove the package with `pacman`:
 sudo pacman -R legacy-launcher
 ```
 
-This removes all files installed by the package. Your personal Legacy Launcher data and game files (stored in your home directory) are left untouched.
+This removes all files installed by the package. Your personal Legacy Launcher data and game files are left untouched — including the launcher the bootstrap downloaded into your home directory, which `pacman` never tracked (see [above](#what-the-checksum-does-and-does-not-cover)). Remove that manually if you want a full cleanup.
 
 ## Repository Structure
 
 ```
 .
 ├── PKGBUILD                  # Build recipe for makepkg
-├── LegacyLauncher.jar        # Official launcher (upstream)
 ├── legacy-launcher.svg       # Scalable application icon
 ├── legacy-launcher_256.png   # 256×256 raster icon
 ├── legacy-launcher_512.png   # 512×512 raster icon
 ├── LICENSE                   # MIT license for packaging files
 └── README.md                 # This file
 ```
+
+`LegacyLauncher.jar` is **not** stored in this repository. It is downloaded into the build
+directory by `makepkg` and is listed in `.gitignore`.
 
 ## Troubleshooting
 
@@ -170,7 +209,7 @@ sudo gtk-update-icon-cache /usr/share/icons/hicolor
 
 ## Contributing
 
-Issues and pull requests are welcome — for example, keeping the bundled JAR current, improving the desktop integration, or refining the `PKGBUILD`. Please keep changes focused on the packaging; anything relating to the launcher itself should be reported to the [upstream project](https://llaun.ch/).
+Issues and pull requests are welcome — for example, keeping the pinned checksum and `pkgver` current, improving the desktop integration, or refining the `PKGBUILD`. Please keep changes focused on the packaging; anything relating to the launcher itself should be reported to the [upstream project](https://llaun.ch/).
 
 ## License
 

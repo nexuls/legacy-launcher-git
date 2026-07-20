@@ -2,6 +2,9 @@
 src/
 pkg/
 
+# Fetched at build time from https://llaun.ch/jar, not vendored
+LegacyLauncher.jar
+
 # Generated package archives
 *.pkg.tar.*
 *.pkg.*
@@ -23,3 +26,4 @@ pkg/
 *.swp
 *.swo
 .DS_Store
+temp/
