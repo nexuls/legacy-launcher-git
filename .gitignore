@@ -1,0 +1,25 @@
+# Build directories
+src/
+pkg/
+
+# Generated package archives
+*.pkg.tar.*
+*.pkg.*
+!*.pkgbuild
+
+# Package metadata
+*.BUILDINFO
+*.MTREE
+*.SRCINFO.sig
+
+# Checksums and signatures
+*.sig
+
+# Logs
+*.log
+
+# Temporary/editor files
+*~
+*.swp
+*.swo
+.DS_Store
