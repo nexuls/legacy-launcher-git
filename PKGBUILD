@@ -1,6 +1,6 @@
 pkgname=legacy-launcher
 pkgver=1.40.3
-pkgrel=1
+pkgrel=2
 pkgdesc="Legacy Launcher for Minecraft"
 arch=('any')
 url="https://llaun.ch/"
@@ -57,7 +57,7 @@ Terminal=false
 Categories=Game;
 Keywords=minecraft;
 StartupNotify=true
-StartupWMClass=net-legacylauncher-LegacyLauncher
+StartupWMClass=org-springframework-boot-loader-PropertiesLauncher
 EOF
 
     # Icons
@@ -69,4 +69,16 @@ EOF
 
     install -Dm644 legacy-launcher_512.png \
         "$pkgdir/usr/share/icons/hicolor/512x512/apps/legacy-launcher.png"
+
+    # The jar re-execs itself as a second JVM whose main class is Spring Boot's
+    # PropertiesLauncher, and AWT derives WM_CLASS from the bottom stack frame,
+    # so the window reports org-springframework-boot-loader-PropertiesLauncher.
+    # StartupWMClass above covers shells that match on it (GNOME); KDE, XFCE and
+    # Cinnamon instead fall back to an icon-theme lookup keyed on WM_CLASS, which
+    # these copies satisfy.
+    install -Dm644 legacy-launcher_256.png \
+        "$pkgdir/usr/share/icons/hicolor/256x256/apps/org-springframework-boot-loader-PropertiesLauncher.png"
+
+    install -Dm644 legacy-launcher_512.png \
+        "$pkgdir/usr/share/icons/hicolor/512x512/apps/org-springframework-boot-loader-PropertiesLauncher.png"
 }
