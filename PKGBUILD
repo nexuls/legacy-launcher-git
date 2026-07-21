@@ -1,7 +1,7 @@
-pkgname=legacy-launcher
+pkgname=legacy-launcher-git
 pkgver=1.40.3
-pkgrel=4
-pkgdesc="Legacy Launcher for Minecraft"
+pkgrel=5
+pkgdesc="Legacy Launcher for Minecraft (Unofficial Installer)"
 arch=('any')
 url="https://llaun.ch/"
 license=('custom')

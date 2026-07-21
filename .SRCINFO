@@ -1,0 +1,13 @@
+pkgbase = legacy-launcher-git
+	pkgdesc = Legacy Launcher for Minecraft (Unofficial Installer)
+	pkgver = 1.40.3
+	pkgrel = 5
+	url = https://llaun.ch/
+	arch = any
+	license = custom
+	depends = java-runtime>=17
+	noextract = LegacyLauncher.jar
+	source = LegacyLauncher.jar::https://llaun.ch/jar
+	sha256sums = 09ba7517c8a9b30780ff9a6de230b8905247835ae0da914d66991e2b3b4b6c4e
+
+pkgname = legacy-launcher-git
