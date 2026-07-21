@@ -1,6 +1,6 @@
 pkgname=legacy-launcher
 pkgver=1.40.3
-pkgrel=5
+pkgrel=1
 pkgdesc="Legacy Launcher for Minecraft (Unofficial Installer)"
 arch=('any')
 url="https://llaun.ch/"
@@ -11,21 +11,38 @@ url="https://llaun.ch/"
 # software when its actual terms are unreviewed.
 license=('LicenseRef-LegacyLauncher')
 depends=('java-runtime>=17')
-# Icons live in icons/ and are referenced from $startdir in package() rather
-# than listed here: makepkg reduces every local source to its basename
-# (get_filename in makepkg's source.sh does ${netfile##*/}), so a path like
-# icons/foo.svg is looked up as ./foo.svg and fails. They ship in the same
-# repo as this PKGBUILD, so git already covers their integrity.
+# Icons sit at the repo root rather than in icons/ because makepkg reduces every
+# local source to its basename (get_filename in makepkg's util/source.sh does
+# ${netfile##*/}), so a path like icons/foo.svg is looked up as ./foo.svg and
+# fails. The fix is a flat layout, NOT reaching outside $srcdir via $startdir:
+# `makepkg -S` packages only the PKGBUILD plus what is listed here, so icons
+# referenced from $startdir are absent from the source tarball and every build
+# from it dies in package() with "cannot stat icons/legacy-launcher.svg".
 source=(
     "LegacyLauncher.jar::https://llaun.ch/jar"
     "LICENSE"
+    "legacy-launcher.svg"
+    "legacy-launcher_256.png"
+    "legacy-launcher_512.png"
+    "minecraft.svg"
+    "minecraft_256.png"
+    "minecraft_512.png"
 )
 # The jar is a zip; without noextract makepkg explodes it into $srcdir.
 noextract=('LegacyLauncher.jar')
 # Never SKIP the remote source: the endpoint is behind Cloudflare, and an
 # unpinned fetch would silently bake a challenge page into the package.
+#
+# Regenerate local sums by hand, not with updpkgsums: it re-fetches the jar and
+# would overwrite the pinned sum above with whatever the endpoint served.
 sha256sums=('09ba7517c8a9b30780ff9a6de230b8905247835ae0da914d66991e2b3b4b6c4e'
-            '11ff075f9d7f58e9c30ef460be904cfb84e8c3a35a4cd1044cde5e5b69ce469d')
+            '11ff075f9d7f58e9c30ef460be904cfb84e8c3a35a4cd1044cde5e5b69ce469d'
+            'bfe4f259f20bc4626c7619e7d72ec1940e631ff0872258064a1d55e6413f73d2'
+            '4d960d32736f6173fc8254b922ebf673e8a2dd2c6dfc963864a3d70b24db8a6b'
+            'fd602599d1910358866bcc501118adfd13bcd89bd1a63e23953e68d153160370'
+            'ece5c3bb77bfadd043591c01b3504fb9c04daa951d93322a321e15036095d6a3'
+            '94aa904c39037d5cd0852a108fd9995ca422bba745903d9b1f490fb4e2ad4fc8'
+            'd234769b937fa3725a51ccbf0b1a6c8405b571fe2b88f77f086daaa2bedef466')
 
 prepare() {
     # Guards the case where a maintainer temporarily sets sha256sums to SKIP
@@ -93,13 +110,13 @@ StartupWMClass=Minecraft*
 EOF
 
     # Icons
-    install -Dm644 "$startdir/icons/legacy-launcher.svg" \
+    install -Dm644 "$srcdir/legacy-launcher.svg" \
         "$pkgdir/usr/share/icons/hicolor/scalable/apps/legacy-launcher.svg"
 
-    install -Dm644 "$startdir/icons/legacy-launcher_256.png" \
+    install -Dm644 "$srcdir/legacy-launcher_256.png" \
         "$pkgdir/usr/share/icons/hicolor/256x256/apps/legacy-launcher.png"
 
-    install -Dm644 "$startdir/icons/legacy-launcher_512.png" \
+    install -Dm644 "$srcdir/legacy-launcher_512.png" \
         "$pkgdir/usr/share/icons/hicolor/512x512/apps/legacy-launcher.png"
 
     # The jar re-execs itself as a second JVM whose main class is Spring Boot's
@@ -108,28 +125,28 @@ EOF
     # StartupWMClass above covers shells that match on it (GNOME); KDE, XFCE and
     # Cinnamon instead fall back to an icon-theme lookup keyed on WM_CLASS, which
     # these copies satisfy.
-    install -Dm644 "$startdir/icons/legacy-launcher_256.png" \
+    install -Dm644 "$srcdir/legacy-launcher_256.png" \
         "$pkgdir/usr/share/icons/hicolor/256x256/apps/org-springframework-boot-loader-PropertiesLauncher.png"
 
-    install -Dm644 "$startdir/icons/legacy-launcher_512.png" \
+    install -Dm644 "$srcdir/legacy-launcher_512.png" \
         "$pkgdir/usr/share/icons/hicolor/512x512/apps/org-springframework-boot-loader-PropertiesLauncher.png"
 
     # Game icons. Namespaced under legacy-launcher- so they cannot collide with
     # a plain minecraft.png from another package in the shared hicolor theme.
-    install -Dm644 "$startdir/icons/minecraft.svg" \
+    install -Dm644 "$srcdir/minecraft.svg" \
         "$pkgdir/usr/share/icons/hicolor/scalable/apps/legacy-launcher-minecraft.svg"
 
-    install -Dm644 "$startdir/icons/minecraft_256.png" \
+    install -Dm644 "$srcdir/minecraft_256.png" \
         "$pkgdir/usr/share/icons/hicolor/256x256/apps/legacy-launcher-minecraft.png"
 
-    install -Dm644 "$startdir/icons/minecraft_512.png" \
+    install -Dm644 "$srcdir/minecraft_512.png" \
         "$pkgdir/usr/share/icons/hicolor/512x512/apps/legacy-launcher-minecraft.png"
 
     # Same fallback for the game window's WM_CLASS. The literal asterisk is part
     # of the class GLFW reports, so it is part of the filename too.
-    install -Dm644 "$startdir/icons/minecraft_256.png" \
+    install -Dm644 "$srcdir/minecraft_256.png" \
         "$pkgdir/usr/share/icons/hicolor/256x256/apps/Minecraft*.png"
 
-    install -Dm644 "$startdir/icons/minecraft_512.png" \
+    install -Dm644 "$srcdir/minecraft_512.png" \
         "$pkgdir/usr/share/icons/hicolor/512x512/apps/Minecraft*.png"
 }

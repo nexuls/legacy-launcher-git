@@ -27,3 +27,6 @@ LegacyLauncher.jar
 *.swo
 .DS_Store
 temp/
+
+# Source packages from makepkg -S
+*.src.tar.gz
