@@ -1,10 +1,15 @@
-pkgname=legacy-launcher-git
+pkgname=legacy-launcher
 pkgver=1.40.3
 pkgrel=5
 pkgdesc="Legacy Launcher for Minecraft (Unofficial Installer)"
 arch=('any')
 url="https://llaun.ch/"
-license=('custom')
+# The jar itself ships no license text and upstream publishes its terms only on
+# the website, so there is no SPDX-listed license to name here. LicenseRef- is
+# the SPDX form for that case. Deliberately NOT 'MIT': the repo's LICENSE covers
+# only the packaging, and declaring MIT would tell users the launcher is free
+# software when its actual terms are unreviewed.
+license=('LicenseRef-LegacyLauncher')
 depends=('java-runtime>=17')
 # Icons live in icons/ and are referenced from $startdir in package() rather
 # than listed here: makepkg reduces every local source to its basename
@@ -13,12 +18,14 @@ depends=('java-runtime>=17')
 # repo as this PKGBUILD, so git already covers their integrity.
 source=(
     "LegacyLauncher.jar::https://llaun.ch/jar"
+    "LICENSE"
 )
 # The jar is a zip; without noextract makepkg explodes it into $srcdir.
 noextract=('LegacyLauncher.jar')
 # Never SKIP the remote source: the endpoint is behind Cloudflare, and an
 # unpinned fetch would silently bake a challenge page into the package.
-sha256sums=('09ba7517c8a9b30780ff9a6de230b8905247835ae0da914d66991e2b3b4b6c4e')
+sha256sums=('09ba7517c8a9b30780ff9a6de230b8905247835ae0da914d66991e2b3b4b6c4e'
+            '11ff075f9d7f58e9c30ef460be904cfb84e8c3a35a4cd1044cde5e5b69ce469d')
 
 prepare() {
     # Guards the case where a maintainer temporarily sets sha256sums to SKIP
@@ -32,6 +39,12 @@ package() {
     # Install launcher
     install -Dm644 LegacyLauncher.jar \
         "$pkgdir/opt/legacy-launcher/LegacyLauncher.jar"
+
+    # Required for any non-SPDX-listed license: namcap flags the package
+    # otherwise. This file documents both halves -- MIT over the packaging,
+    # upstream's own terms over the jar, name and logo.
+    install -Dm644 LICENSE \
+        "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 
     # Wrapper script
     install -Dm755 /dev/stdin \
