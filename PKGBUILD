@@ -1,5 +1,5 @@
 # Maintainer: Arif Sardar <arifsardar.private@gmail.com>
-pkgname=legacy-launcher
+pkgname=legacy-launcher-bootstrap
 pkgver=1.40.3
 pkgrel=1
 pkgdesc="Legacy Launcher for Minecraft (Unofficial Installer)"

@@ -1,4 +1,4 @@
-pkgbase = legacy-launcher
+pkgbase = legacy-launcher-bootstrap
 	pkgdesc = Legacy Launcher for Minecraft (Unofficial Installer)
 	pkgver = 1.40.3
 	pkgrel = 1
@@ -25,4 +25,4 @@ pkgbase = legacy-launcher
 	sha256sums = 94aa904c39037d5cd0852a108fd9995ca422bba745903d9b1f490fb4e2ad4fc8
 	sha256sums = d234769b937fa3725a51ccbf0b1a6c8405b571fe2b88f77f086daaa2bedef466
 
-pkgname = legacy-launcher
+pkgname = legacy-launcher-bootstrap
