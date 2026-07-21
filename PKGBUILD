@@ -1,3 +1,4 @@
+# Maintainer: Arif Sardar <arifsardar.private@gmail.com>
 pkgname=legacy-launcher
 pkgver=1.40.3
 pkgrel=1
@@ -10,14 +11,16 @@ url="https://llaun.ch/"
 # only the packaging, and declaring MIT would tell users the launcher is free
 # software when its actual terms are unreviewed.
 license=('LicenseRef-LegacyLauncher')
-depends=('java-runtime>=17')
+# hicolor-icon-theme owns the /usr/share/icons/hicolor hierarchy this package
+# installs into; without it the icon directories would be unowned.
+depends=('java-runtime>=17' 'hicolor-icon-theme')
 # Icons sit at the repo root rather than in icons/ because makepkg reduces every
 # local source to its basename (get_filename in makepkg's util/source.sh does
 # ${netfile##*/}), so a path like icons/foo.svg is looked up as ./foo.svg and
-# fails. The fix is a flat layout, NOT reaching outside $srcdir via $startdir:
-# `makepkg -S` packages only the PKGBUILD plus what is listed here, so icons
-# referenced from $startdir are absent from the source tarball and every build
-# from it dies in package() with "cannot stat icons/legacy-launcher.svg".
+# fails. The fix is a flat layout, NOT reaching outside srcdir into the build
+# directory: `makepkg -S` packages only the PKGBUILD plus what is listed here,
+# so icons pulled from outside srcdir are absent from the source tarball and
+# every build from it dies in package() with "cannot stat legacy-launcher.svg".
 source=(
     "LegacyLauncher.jar::https://llaun.ch/jar"
     "LICENSE"
@@ -36,7 +39,7 @@ noextract=('LegacyLauncher.jar')
 # Regenerate local sums by hand, not with updpkgsums: it re-fetches the jar and
 # would overwrite the pinned sum above with whatever the endpoint served.
 sha256sums=('09ba7517c8a9b30780ff9a6de230b8905247835ae0da914d66991e2b3b4b6c4e'
-            '11ff075f9d7f58e9c30ef460be904cfb84e8c3a35a4cd1044cde5e5b69ce469d'
+            '476a68d242896eb7a51ec8bb3d3fadfa93474f3b89b5a0ba40599e66b27955a8'
             'bfe4f259f20bc4626c7619e7d72ec1940e631ff0872258064a1d55e6413f73d2'
             '4d960d32736f6173fc8254b922ebf673e8a2dd2c6dfc963864a3d70b24db8a6b'
             'fd602599d1910358866bcc501118adfd13bcd89bd1a63e23953e68d153160370'

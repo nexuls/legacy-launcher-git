@@ -22,9 +22,19 @@ SOFTWARE.
 
 ---
 
-The MIT License above applies ONLY to the packaging files in this repository
-(PKGBUILD, wrapper script, desktop entry, README, and related metadata).
+The MIT License above applies ONLY to the packaging files in this repository:
+PKGBUILD, .SRCINFO, the wrapper script and desktop entries embedded in the
+PKGBUILD, README, and .gitignore.
+
+It does NOT apply to the image files (*.svg, *.png). Those depict Minecraft
+artwork -- the creeper and the grass block -- which is the property of
+Mojang AB / Microsoft, redistributed here under Mojang's usage guidelines for
+unofficial community projects. They are not covered by the MIT grant above and
+no rights in them are granted by it.
 
 The Legacy Launcher application, its name, logo, and the LegacyLauncher.jar
 file are the property of their respective authors and are distributed under
 their own separate license and terms. See https://llaun.ch/ for details.
+
+This package is unofficial and is not affiliated with, endorsed by, or
+sponsored by Mojang AB, Microsoft, or the Legacy Launcher authors.
