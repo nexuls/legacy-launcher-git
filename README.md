@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="icons/legacy-launcher.svg" alt="Legacy Launcher" width="96" height="96">
+<img src="legacy-launcher.svg" alt="Legacy Launcher" width="96" height="96">
 
 # Legacy Launcher PKGBUILD
 
